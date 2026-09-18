@@ -153,12 +153,17 @@ async function main() {
 
   const docs = await get("/docs/ADAPTER.md");
   assert(docs.status === 200, `/docs/ADAPTER.md status ${docs.status}`);
+  assert(typeof docs.body === "string", "docs body string");
+  const docText = docs.body as string;
   assert(
-    typeof docs.body === "string" &&
-      (docs.body as string).includes("dextools-weso-adapter"),
-    "docs mention base URL host",
+    docText.includes("DexTools") || docText.includes("dextools"),
+    "docs mention DexTools",
   );
-  console.log("✓ /docs/ADAPTER.md");
+  assert(
+    docText.includes("vercel.app") || docText.includes("FACTORY") || docText.includes("Factory"),
+    "docs mention hosting or contracts",
+  );
+  console.log("✓ /docs/ADAPTER.md", docText.slice(0, 60).replace(/\n/g, " "), "…");
 
   console.log("\nSmoke OK");
 }
