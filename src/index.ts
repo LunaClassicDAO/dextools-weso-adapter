@@ -268,13 +268,23 @@ app.get("/events", async (req, res) => {
   }
 });
 
-app.get(["/docs/ADAPTER.md", "/docs/adapter.md"], (_req, res) => {
+app.get(["/docs/ADAPTER.md", "/docs/adapter.md"], async (_req, res) => {
   const docPath = resolveAdapterDoc();
-  if (!docPath) {
-    res.status(404).type("text/plain").send("ADAPTER.md not found in deployment");
+  if (docPath) {
+    res.type("text/markdown; charset=utf-8").send(fs.readFileSync(docPath, "utf8"));
     return;
   }
-  res.type("text/markdown; charset=utf-8").send(fs.readFileSync(docPath, "utf8"));
+  // Fallback: GitHub raw (Vercel function may omit docs/ includeFiles)
+  try {
+    const url =
+      "https://raw.githubusercontent.com/LunaClassicDAO/dextools-weso-adapter/main/docs/ADAPTER.md";
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`docs fetch ${r.status}`);
+    const md = await r.text();
+    res.type("text/markdown; charset=utf-8").send(md);
+  } catch (e) {
+    res.status(404).type("text/plain").send("ADAPTER.md not found in deployment");
+  }
 });
 
 app.get("/", (_req, res) => {

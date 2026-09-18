@@ -42,7 +42,7 @@ ADAPTER_URL=http://127.0.0.1:8080 npm run smoke
 
 ## Production
 
-- API: `https://weso-dextools-adapter.vercel.app`
+- API: `https://weso-dt-api.vercel.app`
 - Repo: https://github.com/LunaClassicDAO/dextools-weso-adapter
 
 Do **not** host on weso.world / wesoenergy.com.
